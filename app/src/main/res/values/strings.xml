@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ACC On/Off</string>
+    <string name="log_tag">acconoff</string>
+</resources>
