@@ -1,0 +1,12 @@
+<resources>
+    <array name="script_action_values">
+        <item>off</item>
+        <item>on</item>
+        <item>su</item>
+    </array>
+    <array name="script_actions">
+        <item>None</item>
+        <item>Run</item>
+        <item>Run as root</item>
+    </array>
+</resources>

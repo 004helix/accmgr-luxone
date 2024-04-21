@@ -1,0 +1,58 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:key="notifications_category"
+        app:title="ACCON script">
+
+        <ListPreference
+            app:key="accon"
+            app:title="Action"
+            app:useSimpleSummaryProvider="true"
+            android:entries="@array/script_actions"
+            android:entryValues="@array/script_action_values" />
+
+        <EditTextPreference
+            app:key="accon_script"
+            app:title="Shell script"
+            app:useSimpleSummaryProvider="true"
+            android:inputType="textMultiLine"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:scrollbars="vertical" />
+
+        <Preference
+            app:key="accon_test"
+            app:title="Test script"
+            app:summary="Send accon broadcast"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="notifications_category"
+        app:title="ACCOFF script">
+
+        <ListPreference
+            app:key="accoff"
+            app:title="Action"
+            app:useSimpleSummaryProvider="true"
+            android:entries="@array/script_actions"
+            android:entryValues="@array/script_action_values" />
+
+        <EditTextPreference
+            app:key="accoff_script"
+            app:title="Shell script"
+            app:useSimpleSummaryProvider="true"
+            android:inputType="textMultiLine"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:scrollbars="vertical" />
+
+        <Preference
+            app:key="accoff_test"
+            app:title="Test script"
+            app:summary="Send accoff broadcast"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
