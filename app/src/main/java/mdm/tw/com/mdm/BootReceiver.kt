@@ -11,7 +11,6 @@ import mdm.tw.com.mdm.services.MyService
 
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        Log.i(context.resources.getString(R.string.log_tag), "Handle intent " + intent.action)
         val serviceIntent = Intent(context, MyService::class.java)
         ContextCompat.startForegroundService(context, serviceIntent)
     }

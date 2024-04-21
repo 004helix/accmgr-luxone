@@ -11,7 +11,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import mdm.tw.com.mdm.R
@@ -19,28 +18,26 @@ import mdm.tw.com.mdm.R
 
 class MyService : Service() {
     private val channelId = "AccOnOffChannel"
-    private var onReceiver: BroadcastReceiver? = null
-    private var offReceiver: BroadcastReceiver? = null
+
+    // com.fyt.boot.ACCON receiver
+    private var onReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val serviceIntent = Intent(context, MyService::class.java)
+            ContextCompat.startForegroundService(context, serviceIntent)
+        }
+    }
+
+    // com.fyt.boot.ACCOFF receiver
+    private var offReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val serviceIntent = Intent(context, MyService::class.java)
+            serviceIntent.putExtra("accoff", true)
+            ContextCompat.startForegroundService(context, serviceIntent)
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
-
-        onReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                Log.i(resources.getString(R.string.log_tag), "Handle intent " + intent.action)
-                val serviceIntent = Intent(context, MyService::class.java)
-                ContextCompat.startForegroundService(context, serviceIntent)
-            }
-        }
-
-        offReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                Log.i(resources.getString(R.string.log_tag), "Handle intent " + intent.action)
-                val serviceIntent = Intent(context, MyService::class.java)
-                serviceIntent.putExtra("accoff", true)
-                ContextCompat.startForegroundService(context, serviceIntent)
-            }
-        }
 
         ContextCompat.registerReceiver(
             this,
@@ -60,13 +57,8 @@ class MyService : Service() {
     override fun onDestroy() {
         super.onDestroy()
 
-        onReceiver ?.let {
-            unregisterReceiver(it)
-        }
-
-        offReceiver ?.let {
-            unregisterReceiver(it)
-        }
+        unregisterReceiver(offReceiver)
+        unregisterReceiver(onReceiver)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -80,7 +72,7 @@ class MyService : Service() {
         manager.createNotificationChannel(serviceChannel)
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.mipmap.ic_launcher)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             notificationBuilder
@@ -109,13 +101,7 @@ class MyService : Service() {
         }
     }
 
-    private fun startServices()
-    {
-        Log.i(
-            resources.getString(R.string.log_tag),
-            "Start services"
-        )
-
+    private fun startServices() {
         Runtime.getRuntime().exec(
             arrayOf(
                 "su", "-s",
@@ -126,18 +112,14 @@ class MyService : Service() {
         ).waitFor()
     }
 
-    private fun stopServices()
-    {
-        Log.i(
-            resources.getString(R.string.log_tag),
-            "Stop services"
-        )
-
+    private fun stopServices() {
         startService(
             Intent()
-                .setComponent(ComponentName(
-                    "com.mendhak.gpslogger",
-                    "com.mendhak.gpslogger.GpsLoggingService")
+                .setComponent(
+                    ComponentName(
+                        "com.mendhak.gpslogger",
+                        "com.mendhak.gpslogger.GpsLoggingService"
+                    )
                 )
                 .putExtra("immediatestop", true)
         )
